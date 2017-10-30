@@ -1,0 +1,92 @@
+install
+text
+cdrom
+skipx
+lang en_US.UTF-8
+keyboard us
+timezone UTC
+rootpw oa
+user --name=oa --password=oa
+auth --enableshadow --passalgo=sha512 --kickstart
+firewall --disabled
+selinux --permissive
+bootloader --location=mbr
+zerombr
+clearpart --all --initlabel
+autopart
+firstboot --disable
+reboot
+ 
+%packages --instLangs=en_US.utf8 --nobase --ignoremissing --excludedocs
+ 
+openssh-clients
+sudo
+kernel-headers
+kernel-devel
+gcc
+make
+perl
+curl
+wget
+nfs-utils
+net-tools
+vim-minimal
+bzip2
+-fprintd-pam
+-intltool
+-mariadb-libs
+-postfix
+-linux-firmware
+-aic94xx-firmware
+-atmel-firmware
+-b43-openfwwf
+-bfa-firmware
+-ipw2100-firmware
+-ipw2200-firmware
+-ivtv-firmware
+-iwl100-firmware
+-iwl105-firmware
+-iwl135-firmware
+-iwl1000-firmware
+-iwl2030-firmware
+-iwl2000-firmware
+-iwl3060-firmware
+-iwl3160-firmware
+-iwl3945-firmware
+-iwl4965-firmware
+-iwl5000-firmware
+-iwl5150-firmware
+-iwl6000-firmware
+-iwl6000g2a-firmware
+-iwl6000g2b-firmware
+-iwl6050-firmware
+-iwl7260-firmware
+-libertas-sd8686-firmware
+-libertas-sd8787-firmware
+-libertas-usb8388-firmware
+-ql2100-firmware
+-ql2200-firmware
+-ql23xx-firmware
+-ql2400-firmware
+-ql2500-firmware
+-rt61pci-firmware
+-rt73usb-firmware
+-xorg-x11-drv-ati-firmware
+-zd1211-firmware
+%end
+ 
+ 
+%post --log=/root/ks.log
+ 
+echo "oa ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers.d/oa
+echo "Defaults:oa !requiretty" >> /etc/sudoers.d/oa
+chmod 0440 /etc/sudoers.d/oa
+mkdir -pm 700 /home/oa/.ssh
+cat <<EOK >/home/oa/.ssh/authorized_keys
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDQ7hc+bfrqwPgIh/n7pbuljBxskgynGN4zt7xK10bMeFBsO/ojdhKDTNGn1d0Pw/ry3QK8MyliV724DPWuL/qz1fmz2nGBhie9v0hSkyeQqOQxSceRuGPDIVkLyQ1360u+4LJVjFdOGE5s2MGDtj/YXnbLRe0LJMUp8vC4L0pDEOn5MFNhFTqqk/igwd+CC285oA2AdHW4UbOnB+Da/sa4g1orsn1Jb91owLsdvppFfgdkFctkhFg1dUOvQKG9SKdFFGFsEWsducxKqCZ+a6yP+V9Nl+8a4sFra4PE7hNlXklMjtdcc3U0WO3IEAnP9yZkAsCBdCY2og1wEXaqq45J9gxY27bbqymC2H/LJru7cpo8TbUvXf2hkVlTYt/WOUbhqTaujwG7tzpov8o6BbAQ88/fsQ5VLNhQxYN75QejIZ4/ut/y2M0rOlYD5f+LebdK4OvKN7pNtGfSjwCmERevIB3yRM3zdhPXfTN9l9tq3F/Ii7yPNfnEuXToPLYQkQ14m/b+ShLKmE6YP42md5/yRGLZUe/my1iwR/tYUQz0JlBM4pMjEkCguYVH+nkzc6JMalyBz5ZBtyu33D4QVIqMjGtwIs1U16ADlGQyRP+p1pC7MW0Vm3bqltUzFbPjgtkoUmF1hU5kEogtqSjRMmT4wikHV2iCnqrK+curNl5Snw== itso insecure key
+EOK
+chmod 0600 /home/oa/.ssh/authorized_keys
+chown -R oa.oa /home/oa/.ssh
+yum -y update
+yum -y remove linux-firmware
+%end
