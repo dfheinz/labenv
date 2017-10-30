@@ -1,0 +1,34 @@
+---
+
+- hosts: all
+  become: yes
+  gather_facts: no
+  vars:
+   - hdp_gpg_key: B9733A7A07513CAD
+   - ambari_version: 2.5.2.0
+   - vagrant_default_user: oa
+  pre_tasks:
+    #- name: install python2
+    #    raw: test -e /usr/bin/python || (apt -y update && apt install -y python-minimal)
+    #    when: "ansible_os_family == 'Debian'"
+    #    changed_when: false
+   - setup: #gather facts
+  roles:
+   - role: geerlingguy.java
+     when: "ansible_os_family == 'Debian'"
+     java_packages:
+       - openjdk-8-jdk
+   - role: geerlingguy.java
+     when: "ansible_os_family == 'RedHat'"
+     java_packages:
+       - java-1.8.0-openjdk
+   - role: geerlingguy.ntp
+   - role: SimpliField.transparent-huge-pages
+  tasks:
+   # - name: deb tasks
+   #   include: debian.yml
+   #   when: "ansible_os_family == 'Debian'"
+
+   - name: yum tasks
+     include: redhat.yml
+     when: "ansible_os_family == 'RedHat'"

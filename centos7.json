@@ -41,8 +41,13 @@
 	      "sudo rmdir /tmp/vboxguest",
 	      "rm /home/oa/VBoxGuestAdditions.iso",
 
-	      "echo Image Provisioned!"
+	      "echo Inline Provision Complete"
 	  ]
+    }, 
+
+    {
+      "type": "ansible",
+      "playbook_file": "./base.yml"
     }
   ]
 }

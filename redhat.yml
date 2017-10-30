@@ -1,0 +1,25 @@
+---
+
+- name: add ambari repository
+  yum_repository:
+    name: ambari
+    description: Ambari - an ASF Project Packaged by Hortonworks
+    state: present
+    baseurl: http://public-repo-1.hortonworks.com/ambari/centos7/2.x/updates/2.5.2.0
+    gpgkey: http://s3.amazonaws.com/dev.hortonworks.com/ambari/centos7/RPM-GPG-KEY/RPM-GPG-KEY-Jenkins
+
+- name: upgrade pkgs to latest
+  yum:
+    name: '*'
+    state: latest
+
+- name: disable selinux
+  selinux:
+    state: disabled
+
+- name: install useful things
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - net-tools
