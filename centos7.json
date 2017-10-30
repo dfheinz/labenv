@@ -1,0 +1,48 @@
+
+{
+  "builders": [
+  	{
+	  "type": "virtualbox-iso",
+	  "guest_os_type": "RedHat_64",
+	  "iso_url": "http://mirrors.mit.edu/centos/7/isos/x86_64/CentOS-7-x86_64-Minimal-1708.iso",
+	  "iso_checksum": "bba314624956961a2ea31dd460cd860a77911c1e0a56e4820a12b9c5dad363f5",
+	  "iso_checksum_type": "sha256",
+	  "vboxmanage" : [
+	  	["modifyvm", "{{.Name}}", "--memory", "2048"]
+	  ],
+	  "ssh_username": "oa",
+	  "ssh_password": "oa",
+	  "shutdown_command": "echo 'packer' | sudo -S shutdown -P now",
+	  "http_directory": "http",
+	  "boot_command": [
+        "<wait><esc><esc>",
+        "linux ks=http://{{.HTTPIP}}:{{.HTTPPort}}/kickstart<enter>"
+      ],
+      "headless": "true",
+      "ssh_wait_timeout": "30m",
+      "shutdown_timeout": "30m"
+	}
+  ],
+
+  "provisioners": [
+    {
+      "type": "shell",
+      "inline": [
+	      "sleep 30",
+          "sudo yum -y install gcc make bzip2 kernel-headers kernel-devel dkms",
+          "sudo yum clean all",
+	      "sudo mkdir /tmp/vboxguest",
+	      "sudo mount -t iso9660 -o loop /home/oa/VBoxGuestAdditions.iso /tmp/vboxguest",
+
+	      "cd /tmp/vboxguest",
+	      "sudo ./VBoxLinuxAdditions.run",
+	      "cd /tmp",
+	      "sudo umount /tmp/vboxguest",
+	      "sudo rmdir /tmp/vboxguest",
+	      "rm /home/oa/VBoxGuestAdditions.iso",
+
+	      "echo Image Provisioned!"
+	  ]
+    }
+  ]
+}
