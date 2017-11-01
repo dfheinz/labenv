@@ -49,5 +49,6 @@
       "type": "ansible",
       "playbook_file": "./base.yml"
     }
-  ]
+  ], 
+  "post-processors": ["vagrant"]
 }
