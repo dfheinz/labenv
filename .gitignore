@@ -1,3 +1,5 @@
 output-virtualbox-iso/
 packer_cache/
+.vagrant/
+*.box
 .envrc
